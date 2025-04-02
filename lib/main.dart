@@ -159,7 +159,9 @@ class Studentprovider extends ChangeNotifier {
       notifyListeners();
 
       // 2 - Fetch users
-      studentsState = AsyncValue.success(await _repository.getStudents());
+      List<Student> students = await _repository.getStudents();
+
+      studentsState = AsyncValue.success(students);
 
       // print("SUCCESS: list size ${studentsState!.data!.length.toString()}");
 
@@ -319,19 +321,24 @@ class App extends StatelessWidget {
       if (students.isEmpty) {
         content = Text("No data yet");
       } else {
-        content = ListView.builder(
-          itemCount: students.length,
-          itemBuilder:
-              (context, index) => ListTile(
-                title: Text(students[index].name),
-                subtitle: Text("${students[index].age}"),
-                trailing: Row(
-                  children: [
-                    IconButton(icon: Icon(Icons.edit,color: Colors.blue,),onPressed: ()=>_onUpdatePressed(context,students[index].id,students[index].name,students[index].age),),
-                    IconButton(icon: Icon(Icons.delete, color: Colors.red), onPressed: () => _onDeletePressed(context, students[index].id)),
-                  ],
+        content = SizedBox(
+          child: ListView.builder(
+            itemCount: students.length,
+            itemBuilder:
+                (context, index) => ListTile(
+                  title: Text(students[index].name),
+                  subtitle: Text("${students[index].age}"),
+                  trailing: SizedBox(
+                    width: 100,
+                    child: Row(
+                      children: [
+                        IconButton(icon: Icon(Icons.edit,color: Colors.blue,),onPressed: ()=>_onUpdatePressed(context,students[index].id,students[index].name,students[index].age),),
+                        IconButton(icon: Icon(Icons.delete, color: Colors.red), onPressed: () => _onDeletePressed(context, students[index].id)),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
+          ),
         );
       }
     }
